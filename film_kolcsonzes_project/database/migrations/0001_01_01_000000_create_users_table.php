@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +22,18 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        User::create([
+            'name' => 'Admin21',
+            'email' => 'admin21@example.com',
+            'password' => 'Admin_password'
+        ]);
+
+         User::create([
+            'name' => 'Test2',
+            'email' => 'test2@example.com',
+            'password' => 'Test2_password'
+        ]);
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -35,6 +48,11 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+
+
+
+
     }
 
     /**
