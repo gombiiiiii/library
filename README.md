@@ -1,6 +1,4 @@
-# 09.24 Backend óra
-
-## library adatbázis
+## library adatbázis ##
 
 0 lépés az adatbázis létrehozása a MYSQL létrehozása (XAMPP-ban)
 táblák és környezeti változók --> ezeknek meg kell lennie a migrálás előtt (sorrend mindegy)
@@ -22,6 +20,7 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
+
 ```shell
 cd library_project
 ```
@@ -34,10 +33,9 @@ php artisan make:model Book -m
 php artisan make:model Copy -m
 ```
 
-Book táblához :
+Book táblához : 
 
 Books:
-
 ```php
 Schema::create('books', function (Blueprint $table) {
 $table->id();
@@ -48,7 +46,9 @@ $table->timestamps(); // ezzel egyenlőre nem foglalkozunk, de nem töröljük
 });
 ```
 
+
 copy táblához
+
 
 copies:
 
@@ -60,6 +60,7 @@ $table->foreignId('user_id')->constrained("users")->onDelete('cascade');
 $table->timestamps();
 });
 ```
+
 
 ```shell
 php artisan migrate
@@ -124,7 +125,7 @@ php artisan key:generate
 php artisan serve
 ```
 
-## Filmes adatbázis
+## Filmes adatbázis ##
 
 film : id , title
 users: id , name , email , passw
@@ -144,6 +145,7 @@ composer create-project laravel/laravel film_kolcsonzes_project
 cd fiml_kolcsonzes_project
 ```
 
+
 .env szerkesztése
 
 ```sql
@@ -155,6 +157,8 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
+
+
 ```shell
 php artisan make:model Film -m
 ```
@@ -163,7 +167,8 @@ php artisan make:model Film -m
 php artisan make:model Szerepel -m
 ```
 
-Film:
+Film: 
+
 
 ```php
 <?php
@@ -182,7 +187,7 @@ class Film extends Model
 }
 ```
 
-Szerepel:
+Szerepel: 
 
 ```php
 <?php
@@ -242,6 +247,7 @@ Films:
         ]);
 ```
 
+
 Szerepels:
 
 ```php
@@ -263,5 +269,181 @@ Szerepels:
         'film_id' => 2,
         'user_id' => 2
     ]);
-
+    
 ```
+
+
+# 10.01  #
+
+
+Frontend és Backend az Útvonallal(végpont) van összekapcsolva (url)
+
+Githubról leszedett projektet hogy kell kezelni:
+	-Github link
+	-FACTORY
+	-Alap lekérdezések + tranzakciók
+
+.env szerkesztése
+
+
+Laravel felépítés --MIGRÁLÁS--> mysql ben frissíti az adatokat (PHP myadmin felület)
+
+```shell
+cd mappa
+git clone url
+cd projekt
+```
+
+.env beállítása
+
+```shell
+composer install
+php aritsan migrate
+```
+
+[Laravel Factory](https://medium.com/@maulanayusupp/how-to-use-factory-with-laravel-a5f45ddd61d)
+
+```shell
+php artisan make:factory UserFactory --model=User
+```
+
+
+**Az importálás legyen a modelben!** 
+```shell
+use HasFactory; 
+```
+
+
+**kiegészítések:**
+
+magyar nyelvű adatok: fake('hu_HU')  
+válogatunk meglévő adatokból - Factory.php:  
+
+factories és seederes mappaában lévők szereksztése
+
+```shell
+php artisan migrate:fresh --seed
+```
+
+Frissít és feltölti adatokkal
+
+```shell
+php artisan make:factory TaskFactory --model=Task
+```
+
+Task táblába bele kell tenni a "use HasFactory;" -t és a importálni a modult:
+(use Illuminate\Database\Eloquent\Factories\HasFactory;)
+
+TaskFactory -->
+
+```php
+'title' => fake('hu_HU')->title(),
+'description' => fake()->sentence(),
+'created_date' => now(),
+'end_date' => fake()->date(),
+'user_id' => User::all()->random()->id,
+'status' => rand(0,1)
+```
+
+DatabaseSeeder -->
+
+```php
+Task::factory(10)->create();
+```
+
+```shell
+php artisan migrate:fresh --seed
+```
+
+legyen új tábla categories
+
+task-ban legyen új mező cat_id és legyen összekötve a categories-al
+
+```shell
+php artisan make:model Category -a --api
+```
+
+Cyetegory:
+
+```php
+protected $fillable = [
+	'name'
+];
+```
+
+categories tábla:
+
+```php
+$table->string('name');
+```
+
+
+adatbázis SORREND!!
+categories tábla nevének szerkesztése ,hogy feljebb kerüljön.
+
+
+database seederben a task előtt:
+
+```php
+Category::factory(10)->create();
+```
+
+task-hoz a +fillable:
+
+```php
+'category_id',
+```
+
+task_user tábla:
+
+```php
+$table->foreignId('category_id')->constrained('categories');
+```
+
+taskfactory:
+
+```php
+'category_id' => Category::all()->random()->id,
+```
+
+
+### REST API ###
+
+Kérések
+	GET -> index (visszatér az adattal)
+		SHOW -> vissza adja/megmutatja az adatot
+	
+	POST 
+		store -> létrehoz
+	DELETE
+		destroy
+	PUT és PATCH -> Update (részleges módosításhoz)
+	Postman ()
+
+CetegorController:
+
+	return Category::all();
+
+```shell
+php artisan install:api
+```
+
+api.php-be:
+
+```php
+Route::get('/categories', [CategoryController::class, 'index']);
+```
+terminálba
+```shell
+php artisan key:generate
+php artisan serve
+```
+
+böngészőbe: 
+```url
+http://127.0.0.1:8000/api/categories
+```
+
+### A library projektet fojtatjuk ###
+
+kell annak is factory illetve minden amit ma csináltunk
