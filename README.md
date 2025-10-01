@@ -1,4 +1,6 @@
-## library adatbázis ##
+# 09.24 Backend óra
+
+## library adatbázis
 
 0 lépés az adatbázis létrehozása a MYSQL létrehozása (XAMPP-ban)
 táblák és környezeti változók --> ezeknek meg kell lennie a migrálás előtt (sorrend mindegy)
@@ -20,7 +22,6 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-
 ```shell
 cd library_project
 ```
@@ -33,9 +34,10 @@ php artisan make:model Book -m
 php artisan make:model Copy -m
 ```
 
-Book táblához : 
+Book táblához :
 
 Books:
+
 ```php
 Schema::create('books', function (Blueprint $table) {
 $table->id();
@@ -46,9 +48,7 @@ $table->timestamps(); // ezzel egyenlőre nem foglalkozunk, de nem töröljük
 });
 ```
 
-
 copy táblához
-
 
 copies:
 
@@ -60,7 +60,6 @@ $table->foreignId('user_id')->constrained("users")->onDelete('cascade');
 $table->timestamps();
 });
 ```
-
 
 ```shell
 php artisan migrate
@@ -125,7 +124,7 @@ php artisan key:generate
 php artisan serve
 ```
 
-## Filmes adatbázis ##
+## Filmes adatbázis
 
 film : id , title
 users: id , name , email , passw
@@ -145,7 +144,6 @@ composer create-project laravel/laravel film_kolcsonzes_project
 cd fiml_kolcsonzes_project
 ```
 
-
 .env szerkesztése
 
 ```sql
@@ -157,8 +155,6 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-
-
 ```shell
 php artisan make:model Film -m
 ```
@@ -167,8 +163,7 @@ php artisan make:model Film -m
 php artisan make:model Szerepel -m
 ```
 
-Film: 
-
+Film:
 
 ```php
 <?php
@@ -187,7 +182,7 @@ class Film extends Model
 }
 ```
 
-Szerepel: 
+Szerepel:
 
 ```php
 <?php
@@ -247,7 +242,6 @@ Films:
         ]);
 ```
 
-
 Szerepels:
 
 ```php
@@ -269,21 +263,19 @@ Szerepels:
         'film_id' => 2,
         'user_id' => 2
     ]);
-    
+
 ```
-
-
-# 10.01  #
-
+# 10.01 Backend óra
 
 Frontend és Backend az Útvonallal(végpont) van összekapcsolva (url)
 
-Githubról leszedett projektet hogy kell kezelni:
+Mai órán:
+	-Githubról leszedett projektet hogy kell kezelni:
 	-Github link
 	-FACTORY
-	-Alap lekérdezések + tranzakciók
+	-Alap lekérdezések + tranzakciók (eddig nem jutottunk el)
 
-.env szerkesztése
+** .env szerkesztése **
 
 
 Laravel felépítés --MIGRÁLÁS--> mysql ben frissíti az adatokat (PHP myadmin felület)
