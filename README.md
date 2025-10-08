@@ -265,18 +265,18 @@ Szerepels:
     ]);
 
 ```
+
 # 10.01 Backend óra
 
 Frontend és Backend az Útvonallal(végpont) van összekapcsolva (url)
 
 Mai órán:
-	-Githubról leszedett projektet hogy kell kezelni:
-	-Github link
-	-FACTORY
-	-Alap lekérdezések + tranzakciók (eddig nem jutottunk el)
+-Githubról leszedett projektet hogy kell kezelni:
+-Github link
+-FACTORY
+-Alap lekérdezések + tranzakciók (eddig nem jutottunk el)
 
 ** .env szerkesztése **
-
 
 Laravel felépítés --MIGRÁLÁS--> mysql ben frissíti az adatokat (PHP myadmin felület)
 
@@ -299,17 +299,16 @@ php aritsan migrate
 php artisan make:factory UserFactory --model=User
 ```
 
+**Az importálás legyen a modelben!**
 
-**Az importálás legyen a modelben!** 
 ```shell
-use HasFactory; 
+use HasFactory;
 ```
-
 
 **kiegészítések:**
 
 magyar nyelvű adatok: fake('hu_HU')  
-válogatunk meglévő adatokból - Factory.php:  
+válogatunk meglévő adatokból - Factory.php:
 
 factories és seederes mappaában lévők szereksztése
 
@@ -369,10 +368,8 @@ categories tábla:
 $table->string('name');
 ```
 
-
 adatbázis SORREND!!
 categories tábla nevének szerkesztése ,hogy feljebb kerüljön.
-
 
 database seederben a task előtt:
 
@@ -398,23 +395,21 @@ taskfactory:
 'category_id' => Category::all()->random()->id,
 ```
 
-
-### REST API ###
+### REST API
 
 Kérések
-	GET -> index (visszatér az adattal)
-		SHOW -> vissza adja/megmutatja az adatot
-	
-	POST 
-		store -> létrehoz
-	DELETE
-		destroy
-	PUT és PATCH -> Update (részleges módosításhoz)
-	Postman ()
+GET -> index (visszatér az adattal)
+SHOW -> vissza adja/megmutatja az adatot
+POST
+store -> létrehoz
+DELETE
+destroy
+PUT és PATCH -> Update (részleges módosításhoz)
+Postman ()
 
 CetegorController:
 
-	return Category::all();
+    return Category::all();
 
 ```shell
 php artisan install:api
@@ -425,17 +420,107 @@ api.php-be:
 ```php
 Route::get('/categories', [CategoryController::class, 'index']);
 ```
+
 terminálba
+
 ```shell
 php artisan key:generate
 php artisan serve
 ```
 
-böngészőbe: 
+böngészőbe:
+
 ```url
 http://127.0.0.1:8000/api/categories
 ```
 
-### A library projektet fojtatjuk ###
+### A library projektet fojtatjuk
 
 kell annak is factory illetve minden amit ma csináltunk
+
+# 10.08
+
+A library projektet visszük tovább, ismét
+
+[Git link a letöltéshez](https://github.com/Agnes-milia/library_2025_esti.git)
+ezután vscodeban :
+
+```Shell
+cd library_projekt
+```
+
+(betallóztuk a projekt mappát)
+
+Ezután-> .env szerkesztése (23-tól 28.-ik sorig)
+
+Majd jöhet az install
+
+```php
+composer install
+```
+
+ezután jöhet a felépítés:
+
+```shell
+php artisan make:model Lending -a --api
+```
+
+A pdf alapján átalakítjuk a modelleket, factrory-kat táblákat
+
+Majd :
+
+Ezt nem adtuk meg mert a copy factory-ban még nem volt kitöltve a publication:
+
+```shell
+php artisan migrate:fresh --seed
+```
+
+Ez ment helyette:
+
+```shell
+php artisan migrate:fresh
+```
+
+Landing modellbe (a 'use HasFactory;' után ):
+
+```php
+protected function setKeysForSaveQuery($query)
+    {
+        $query
+            ->where('user_id', '=', $this->getAttribute('user_id'))
+            ->where('copy_id', '=', $this->getAttribute('copy_id'))
+            ->where('start', '=', $this->getAttribute('start'));
+        return $query;
+    }
+```
+
+landings táblába:
+
+```php
+   // $table->id();
+            // $table->timestamps();
+            $table->primary(['user_id', 'copy_id', 'start']);
+            $table->foreignId('user_id')->constraind("users");
+            $table->foreignId('copy_id')->constraind("copies");
+            $table->date('start')->default(now());
+            $table->timestamps();
+```
+
+Ezután megint:
+
+```shell
+php artisan migrate:fresh
+```
+
+Database seeder:
+
+```shell
+User::factory(10)->create();
+        Lending::factory(10)->create();
+```
+
+Majd ez:
+
+```shell
+php artisan migrate:fresh --seed
+```

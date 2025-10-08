@@ -21,15 +21,20 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->smallInteger('role')->default(1);
+            // Role tábla: 0 - admin , 1 - user , 2 egyéb
             $table->rememberToken();
             $table->timestamps();
         });
+
+        
 
         User::create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
             // 'password' => bcrypt('password'),
             'password' => 'admin123',
+            'role' => '0',
         ]);
 
          User::create([

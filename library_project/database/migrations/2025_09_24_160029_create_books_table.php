@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
             $table->string('author',32);
             $table->longText('title',150);
-            $table->integer('pieces')->default(50);
+            // $table->integer('pieces')->default(50);
             $table->timestamps(); // ezzel egyenlőre nem foglalkozunk, de nem töröljük
         });
 
@@ -28,7 +28,7 @@ return new class extends Migration
         Book::create([
             'author' => 'Carl Marx',
             'title' => 'Tőke',
-            'pieces' => 100
+            // 'pieces' => 100
         ]);
 
          Book::create([
